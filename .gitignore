@@ -10,3 +10,5 @@ playwright-report/
 *.nupkg
 *.snupkg
 appsettings.Local.json
+Publish/
+deploy.zip
