@@ -15,6 +15,20 @@
 <div id="statusMessage" class="alert d-none" role="alert"></div>
 <ul id="suggestions" class="list-group"></ul>
 
+<style>
+    #suggestions .list-group-item {
+        cursor: pointer;
+    }
+    #suggestions .list-group-item:hover {
+        background-color: #e9ecef;
+    }
+    #suggestions .list-group-item.active {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        color: #fff;
+    }
+</style>
+
 @section Scripts {
     <script>
         const input = document.getElementById("addressInput");
@@ -27,14 +41,46 @@
             statusMessage.textContent = message;
         }
 
+        async function validateAddress(query) {
+            try {
+                const response = await fetch(`/api/address/validate?query=${encodeURIComponent(query)}`);
+                if (response.status === 503) {
+                    setMessage("Address service is unavailable. Try again shortly.", "danger");
+                    renderSuggestions([]);
+                    return;
+                }
+
+                if (response.status === 504) {
+                    setMessage("Address service timed out. Please retry.", "danger");
+                    renderSuggestions([]);
+                    return;
+                }
+
+                const result = await response.json();
+                setMessage(result.message, result.isValid ? "success" : "warning");
+                renderSuggestions(result.isValid ? [] : (result.suggestions || []));
+            } catch {
+                setMessage("Unable to validate address right now.", "danger");
+                renderSuggestions([]);
+            }
+        }
+
         function renderSuggestions(items) {
             suggestions.innerHTML = "";
             items.forEach(item => {
                 const li = document.createElement("li");
-                li.className = "list-group-item";
+                li.className = "list-group-item list-group-item-action";
                 li.textContent = item;
+                li.setAttribute("role", "button");
+                li.addEventListener("click", () => selectSuggestion(item));
                 suggestions.appendChild(li);
             });
+        }
+
+        function selectSuggestion(address) {
+            input.value = address;
+            clearTimeout(timerId);
+            validateAddress(address);
         }
 
         input.addEventListener("input", () => {
@@ -47,29 +93,7 @@
                 return;
             }
 
-            timerId = setTimeout(async () => {
-                try {
-                    const response = await fetch(`/api/address/validate?query=${encodeURIComponent(query)}`);
-                    if (response.status === 503) {
-                        setMessage("Address service is unavailable. Try again shortly.", "danger");
-                        renderSuggestions([]);
-                        return;
-                    }
-
-                    if (response.status === 504) {
-                        setMessage("Address service timed out. Please retry.", "danger");
-                        renderSuggestions([]);
-                        return;
-                    }
-
-                    const result = await response.json();
-                    setMessage(result.message, result.isValid ? "success" : "warning");
-                    renderSuggestions(result.suggestions || []);
-                } catch {
-                    setMessage("Unable to validate address right now.", "danger");
-                    renderSuggestions([]);
-                }
-            }, 350);
+            timerId = setTimeout(() => validateAddress(query), 350);
         });
     </script>
 }

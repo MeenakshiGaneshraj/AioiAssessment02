@@ -30,12 +30,14 @@ Default test credentials in `src/WebApp/appsettings.json`:
 - Password: `Passw0rd!`
 
 For real NZ Post integration, set:
-- `NzPost__ApiKey` environment variable
+- `NzPost__ClientId` environment variable
+- `NzPost__ClientSecret` environment variable
 
 Optional overrides:
 - `Login__Username`
 - `Login__Password`
 - `NzPost__BaseUrl`
+- `NzPost__OAuthUrl`
 - `NzPost__TimeoutSeconds`
 
 ## Run Locally
@@ -78,8 +80,10 @@ CI is configured in `.github/workflows/ci.yml`:
 Deploy `src/WebApp` to Azure App Service and configure these App Settings:
 - `Login__Username`
 - `Login__Password`
-- `NzPost__ApiKey`
+- `NzPost__ClientId`
+- `NzPost__ClientSecret`
 - `NzPost__BaseUrl` (optional override)
+- `NzPost__OAuthUrl` (optional override)
 - `NzPost__TimeoutSeconds` (optional override)
 
 Use GitHub Actions deployment or Azure publish profile/OIDC.
