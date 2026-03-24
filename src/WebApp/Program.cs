@@ -103,7 +103,13 @@ public sealed class NzPostOptions
     public string BaseUrl { get; init; } = "https://api.nzpost.co.nz";
 
     [Required]
-    public string ApiKey { get; init; } = string.Empty;
+    public string OAuthUrl { get; init; } = "https://oauth.nzpost.co.nz/as/token.oauth2";
+
+    [Required]
+    public string ClientId { get; init; } = string.Empty;
+
+    [Required]
+    public string ClientSecret { get; init; } = string.Empty;
 
     [Range(1, 60)]
     public int TimeoutSeconds { get; init; } = 10;
