@@ -87,3 +87,23 @@ Deploy `src/WebApp` to Azure App Service and configure these App Settings:
 - `NzPost__TimeoutSeconds` (optional override)
 
 Use GitHub Actions deployment or Azure publish profile/OIDC.
+
+
+Live URL:
+https://aioi-nzaddress-checker.azurewebsites.net/
+Login credentials:
+Username: candidate
+Password: Passw0rd!
+
+To Run Unit test:
+1. Open Powershell
+2. dotnet test "C:\Dev\Meena\AioiAssessment02\tests\WebApp.Tests\WebApp.Tests.csproj"
+
+To Run E2E test:
+1. To run web app, Open Powershell
+    dotnet run --project "C:\Dev\Meena\AioiAssessment02\src\WebApp\WebApp.csproj" --urls http://127.0.0.1:5099
+2. To run E2E test, Open another Powershell
+    $env:HEADED="1"
+    $env:E2E_BASE_URL="http://127.0.0.1:5099"
+    dotnet test "C:\Dev\Meena\AioiAssessment02\tests/WebApp.E2E/WebApp.E2E.csproj"
+    dotnet test "C:\Dev\Meena\AioiAssessment02\tests/WebApp.E2E/WebApp.E2E.csproj" --filter "Login_Succeeds_And_ShowsAddressChecker"

@@ -12,3 +12,4 @@ playwright-report/
 appsettings.Local.json
 Publish/
 deploy.zip
+artifacts/
